@@ -1,4 +1,23 @@
+import 'file:///C:/Users/User/flutter/projects/clima_app/lib/constants.dart';
+import 'location.dart';
+
+import 'networking.dart';
+
 class WeatherModel {
+
+  Future getCityWeather(String cityName) async{
+    Networking networking = Networking('$siteAddress?q=$cityName&appid=$apiKey&units=metric');
+    return await networking.getWeatherData();
+  }
+
+
+  Future getLocationData() async{
+    Location location = Location();
+    await location.getCurrentLocation();
+    Networking networking = Networking('$siteAddress?lat=${location.latitude}&lon=${location.longitude}&appid=$apiKey&units=metric');
+    return await networking.getWeatherData();
+  }
+
   String getWeatherIcon(int condition) {
     if (condition < 300) {
       return '🌩';
@@ -19,7 +38,7 @@ class WeatherModel {
     }
   }
 
-  String getMessage(int temp) {
+  String getMessage(num temp) {
     if (temp > 25) {
       return 'It\'s 🍦 time';
     } else if (temp > 20) {

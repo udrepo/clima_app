@@ -1,12 +1,50 @@
+import 'package:clima_app/screens/city_screen.dart';
+import 'package:clima_app/services/weather.dart';
 import 'package:flutter/material.dart';
-import '../utilities/constants.dart';
+import '../constants.dart';
 
 class LocationScreen extends StatefulWidget {
+  final locationWeather;
+
+  LocationScreen(this.locationWeather);
+
   @override
   _LocationScreenState createState() => _LocationScreenState();
 }
 
 class _LocationScreenState extends State<LocationScreen> {
+  WeatherModel weatherModel = WeatherModel();
+  num temperature;
+  String weatherIcon;
+  String weatherMessage;
+  String cityName;
+
+  void updateUI(weatherData) {
+    setState(() {
+      if (weatherData == null) {
+        temperature = 0;
+        weatherIcon = '';
+        weatherMessage = 'Turn on location!';
+        cityName = '';
+        return;
+      }
+      num temp = weatherData['main']['temp'];
+      temperature = temp.toInt();
+      weatherIcon =
+          weatherModel.getWeatherIcon(weatherData['weather'][0]['id']);
+      weatherMessage = weatherModel.getMessage(temperature);
+      cityName = weatherData['name'];
+    });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    updateUI(widget.locationWeather);
+    print(temperature);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,23 +61,37 @@ class _LocationScreenState extends State<LocationScreen> {
         child: SafeArea(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: <Widget>[
                   FlatButton(
-                    onPressed: () {},
+                    onPressed: () async {
+                      print('it is relocation button');
+                      var weatherData = await weatherModel.getLocationData();
+                      updateUI(weatherData);
+                    },
                     child: Icon(
                       Icons.near_me,
-                      size: 50.0,
+                      size: 40,
                     ),
                   ),
                   FlatButton(
-                    onPressed: () {},
+                    onPressed: () async {
+                      var typedName = await Navigator.push(context,
+                          MaterialPageRoute(builder: (context) {
+                        return CityScreen();
+                      }));
+                      print(typedName);
+                      if (typedName != null) {
+                       var weatherData = await weatherModel.getCityWeather(typedName);
+                       updateUI(weatherData);
+                      }
+                    },
                     child: Icon(
-                      Icons.location_city,
-                      size: 50.0,
+                      Icons.search_sharp,
+                      size: 40,
                     ),
                   ),
                 ],
@@ -49,20 +101,21 @@ class _LocationScreenState extends State<LocationScreen> {
                 child: Row(
                   children: <Widget>[
                     Text(
-                      '32°',
+                      '$temperature°',
                       style: kTempTextStyle,
                     ),
                     Text(
-                      '☀️',
+                      weatherIcon,
                       style: kConditionTextStyle,
                     ),
                   ],
+                  mainAxisAlignment: MainAxisAlignment.center,
                 ),
               ),
               Padding(
                 padding: EdgeInsets.only(right: 15.0),
                 child: Text(
-                  "It's 🍦 time in San Francisco!",
+                  "$weatherMessage in $cityName!",
                   textAlign: TextAlign.right,
                   style: kMessageTextStyle,
                 ),
