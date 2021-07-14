@@ -1,21 +1,44 @@
 import 'package:flutter/material.dart';
 
-const apiKey = 'a7b09f52c956c4ea4cf9cfb86dc279ef';
+const apiKey = '';
 const siteAddress = 'https://api.openweathermap.org/data/2.5/weather';
 
-const kTempTextStyle = TextStyle(
+const kTempTextStyleMin5 = TextStyle(
   fontFamily: 'Spartan MB',
-  fontSize: 70,
+  fontSize: 60,
+  color: Color(0xff636154),
+);
+
+const kTempTextStyle10 = TextStyle(
+  fontFamily: 'Spartan MB',
+  fontSize: 60,
+  color: Color(0xff6ac6f9),
+);
+const kTempTextStyle20 = TextStyle(
+  fontFamily: 'Spartan MB',
+  fontSize: 60,
+  color: Color(0xfffbed63),
+);
+const kTempTextStyle30 = TextStyle(
+  fontFamily: 'Spartan MB',
+  fontSize: 60,
+  color: Color(0xffffb748),
+);
+const kTempTextStyle40 = TextStyle(
+  fontFamily: 'Spartan MB',
+  fontSize: 60,
+  color: Color(0xfff0341f),
 );
 
 const kMessageTextStyle = TextStyle(
   fontFamily: 'Spartan MB',
-  fontSize: 50.0,
+  fontSize: 20,
 );
 
 const kButtonTextStyle = TextStyle(
   fontSize: 20.0,
   fontFamily: 'Spartan MB',
+  backgroundColor: Colors.red
 );
 
 const kConditionTextStyle = TextStyle(
@@ -25,11 +48,11 @@ const kConditionTextStyle = TextStyle(
 const inputDecoration = InputDecoration(
   filled: true,
   fillColor: Colors.white,
-  icon: Icon(Icons.location_pin,
-    color: Colors.white,),
+  icon: Icon(Icons.location_pin, size: 40,
+    color: Colors.redAccent,),
   hintText: 'Enter a city name',
   hintStyle: TextStyle(
-      color: Colors.grey
+      color: Colors.redAccent
   ),
   border: OutlineInputBorder(
       borderRadius: BorderRadius.all(Radius.circular(10)),

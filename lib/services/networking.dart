@@ -9,7 +9,6 @@ class Networking {
 
   Future getWeatherData() async {
     final response = await http.get(Uri.parse(url));
-
     if (response.statusCode == 200) {
       String data = response.body;
       return jsonDecode(data);

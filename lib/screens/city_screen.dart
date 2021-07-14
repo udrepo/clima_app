@@ -23,6 +23,7 @@ class _CityScreenState extends State<CityScreen> {
         child: SafeArea(
           child: Column(
             children: <Widget>[
+              SizedBox(height: 10,),
               Align(
                 alignment: Alignment.topLeft,
                 child: FlatButton(
@@ -32,6 +33,7 @@ class _CityScreenState extends State<CityScreen> {
                   child: Icon(
                     Icons.arrow_back_rounded,
                     size: 50.0,
+                    color: Colors.red,
                   ),
                 ),
               ),
@@ -47,11 +49,16 @@ class _CityScreenState extends State<CityScreen> {
               ),
               FlatButton(
                 onPressed: () {
-                   var typedName =  Navigator.pop(context, cityName);
+                 Navigator.pop(context, cityName);
                 },
-                child: Text(
-                  'Get Weather',
-                  style: kButtonTextStyle,
+                child: Container(
+                  padding: EdgeInsets.all(9),
+                  color: Colors.red,
+                  child: Text(
+                    'Get Weather',
+                    style: kButtonTextStyle,
+
+                  ),
                 ),
               ),
             ],

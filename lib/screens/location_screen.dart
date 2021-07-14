@@ -1,6 +1,7 @@
 import 'package:clima_app/screens/city_screen.dart';
 import 'package:clima_app/services/weather.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../constants.dart';
 
 class LocationScreen extends StatefulWidget {
@@ -18,6 +19,17 @@ class _LocationScreenState extends State<LocationScreen> {
   String weatherIcon;
   String weatherMessage;
   String cityName;
+  num feelsLike;
+  num windSpeed;
+  num humidity;
+
+  TextStyle setTemperatureStyle() {
+    if (temperature > 30) return kTempTextStyle40;
+    if (temperature > 20) return kTempTextStyle30;
+    if (temperature > 10) return kTempTextStyle20;
+    if (temperature > -5) return kTempTextStyle10;
+    return kTempTextStyleMin5;
+  }
 
   void updateUI(weatherData) {
     setState(() {
@@ -28,11 +40,12 @@ class _LocationScreenState extends State<LocationScreen> {
         cityName = '';
         return;
       }
-      num temp = weatherData['main']['temp'];
-      temperature = temp.toInt();
+      temperature = weatherData['main']['temp'].toInt();
+      feelsLike = weatherData['main']['feels_like'].toInt();
+      windSpeed = weatherData['wind']['speed'].toInt();
+      humidity = weatherData['main']['humidity'].toInt();
       weatherIcon =
           weatherModel.getWeatherIcon(weatherData['weather'][0]['id']);
-      weatherMessage = weatherModel.getMessage(temperature);
       cityName = weatherData['name'];
     });
   }
@@ -72,10 +85,12 @@ class _LocationScreenState extends State<LocationScreen> {
                       var weatherData = await weatherModel.getLocationData();
                       updateUI(weatherData);
                     },
-                    child: Icon(
-                      Icons.near_me,
-                      size: 40,
-                    ),
+                    child:  IconButton(
+                        icon: FaIcon(
+                          FontAwesomeIcons.locationArrow,
+                          size: 30,
+                        ),
+                        onPressed: null)
                   ),
                   FlatButton(
                     onPressed: () async {
@@ -85,39 +100,94 @@ class _LocationScreenState extends State<LocationScreen> {
                       }));
                       print(typedName);
                       if (typedName != null) {
-                       var weatherData = await weatherModel.getCityWeather(typedName);
-                       updateUI(weatherData);
+                        var weatherData =
+                            await weatherModel.getCityWeather(typedName);
+                        updateUI(weatherData);
                       }
                     },
-                    child: Icon(
-                      Icons.search_sharp,
-                      size: 40,
-                    ),
+                    child:  IconButton(
+                        icon: FaIcon(
+                          FontAwesomeIcons.search,
+                          size: 40,
+                        ),
+                        onPressed: null)
+                  ),
+                ],
+              ),
+              Column(
+                children: [
+
+                  Text(
+                    '$cityName',
+                    style: setTemperatureStyle(),
+                  ),
+                  Row(
+                    children: <Widget>[
+                      Text(
+                        '$temperature°',
+                        style: setTemperatureStyle(),
+                      ),
+                      Text(
+                        weatherIcon,
+                        style: kConditionTextStyle,
+                      ),
+                    ],
+                    mainAxisAlignment: MainAxisAlignment.center,
                   ),
                 ],
               ),
               Padding(
-                padding: EdgeInsets.only(left: 15.0),
+                padding: EdgeInsets.only(bottom: 20),
                 child: Row(
-                  children: <Widget>[
-                    Text(
-                      '$temperature°',
-                      style: kTempTextStyle,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        Text("Feels like",
+                        style: kMessageTextStyle,),
+                        IconButton(
+                            // Use the FaIcon Widget + FontAwesomeIcons class for the IconData
+                            icon: FaIcon(
+                              FontAwesomeIcons.temperatureHigh,
+                              size: 40,
+                            ),
+                            onPressed: () {
+                              print("Pressed");
+                            }),
+                        Text('$feelsLike°', style: kMessageTextStyle,)
+                      ],
                     ),
-                    Text(
-                      weatherIcon,
-                      style: kConditionTextStyle,
+                    Column(
+                      children: [
+                        Text("Wind speed", style: kMessageTextStyle,),
+                        IconButton(
+                            // Use the FaIcon Widget + FontAwesomeIcons class for the IconData
+                            icon: FaIcon(
+                              FontAwesomeIcons.wind,
+                              size: 40,
+                            ),
+                            onPressed: () {
+                              print("Pressed");
+                            }),
+                        Text('$windSpeed m/s', style: kMessageTextStyle,)
+                      ],
+                    ),
+                    Column(
+                      children: [
+                        Text("Humidity", style: kMessageTextStyle,),
+                        IconButton(
+                            icon: FaIcon(
+                              FontAwesomeIcons.water,
+                              size: 40,
+                            ),
+                            onPressed: () {
+                              print("Pressed");
+                            }),
+                        Text('$humidity%', style: kMessageTextStyle,)
+                      ],
                     ),
                   ],
-                  mainAxisAlignment: MainAxisAlignment.center,
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.only(right: 15.0),
-                child: Text(
-                  "$weatherMessage in $cityName!",
-                  textAlign: TextAlign.right,
-                  style: kMessageTextStyle,
                 ),
               ),
             ],
